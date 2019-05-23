@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Col,
   Container,
+  Form,
+  FormGroup,
+  Label,
   PaginationLink,
   Pagination,
   PaginationItem,
@@ -10,8 +13,9 @@ import {
 import './style.scss';
 
 import Beer from '../Product';
-import useFetch from '../../utils/useFetch';
+import { filterBeers } from '../../utils/filters';
 import { generateYears, generateMonths } from '../../utils/date';
+
 
 const FavoriteBeers = () => {
   const [currentPage, setPage] = useState(1);
@@ -19,39 +23,76 @@ const FavoriteBeers = () => {
   const indexOfLastBeer = currentPage * beersPerPage;
   const indexOfFirstTodo = indexOfLastBeer - beersPerPage;
 
-  const beers = useFetch('http://localhost:8084/beers.json', []);
-  const currentBeers = beers.slice(indexOfFirstTodo, indexOfLastBeer);
 
-  const years = generateYears(1900);
+  const [fromMonth, setFromMonth] = useState(1);
+  const [toMonth, setToMonth] = useState(1);
+
+  const defaultYear = 2008;
+  const [fromYear, setFromYear] = useState(defaultYear);
+  const [toYear, setToYear] = useState(2018);
+  const years = generateYears(defaultYear);
+
+  // Fetch first time beers
+  const [beers, setBeers] = useState([]);
+  useEffect(() => {
+    fetch('http://localhost:8080/beers.json')
+      .then(response => response.json())
+      .then(d => setBeers(d));
+  }, []);
+
+  const [filteredBeers, setFilteredBeers] = useState([]);
+  useEffect(
+    () => {
+      setFilteredBeers(
+        filterBeers(
+          beers,
+          `${fromMonth}${'\\'}${fromYear}`,
+          `${toMonth}${'\\'}${toYear}`,
+        ),
+      );
+    },
+    [
+      beers,
+      fromYear,
+      toYear,
+      fromMonth,
+      toMonth,
+    ],
+  );
+
+
+  const currentBeers = filteredBeers.slice(indexOfFirstTodo, indexOfLastBeer);
+
+
   const months = generateMonths();
 
   const pageNumbers = [];
-  for (let i = 1; i <= Math.ceil(beers.length / beersPerPage); i += 1) {
+  for (let i = 1; i <= Math.ceil(filteredBeers.length / beersPerPage); i += 1) {
     pageNumbers.push(i);
   }
 
   return (
     <Container>
       <Row>
-        <Col sm="12" md={{ size: 8, offset: 2 }}>
+        <Col sm="12" lg={{ size: 8, offset: 2 }}>
           <div className="Filter">
             <Row className="align-items-center">
               <Col sm="12" md="4">First Brewed</Col>
               <Col sm="12" md="4">
                 <span className="mr-1 text-uppercase">between</span>
-                <select>
+                <select onChange={e => setFromMonth(e.target.value)}>
                   {months.map(month => (<option value={month}>{month}</option>))}
                 </select>
-                <select>
+                <select onChange={e => setFromYear(e.target.value)}>
                   {years.map(year => (<option value={year}>{year}</option>))}
                 </select>
               </Col>
               <Col sm="12" md="4">
                 <span className="mr-1 text-uppercase">and</span>
-                <select>
+                <select onChange={e => setToMonth(e.target.value)}>
                   {months.map(month => (<option value={month}>{month}</option>))}
                 </select>
-                <select>
+                <select onChange={e => setToYear(e.target.value)}>
                   {years.map(year => (<option value={year}>{year}</option>))}
                 </select>
               </Col>
@@ -59,14 +100,14 @@ const FavoriteBeers = () => {
           </div>
         </Col>
       </Row>
-      <Row>
+      <Row className="row-eq-height">
         {currentBeers.map(beer => (
           <Col sm="12" md="6">
             <Beer {...beer} key={`beer-${beer.id}`} />
           </Col>
         ))}
       </Row>
-      <Row className="justify-content-center">
+      <Row className="justify-content-center mt-5">
         <Col className="d-flex">
           <Pagination size="lg" className="mx-auto">
             <PaginationItem disabled={currentPage === 1}>
