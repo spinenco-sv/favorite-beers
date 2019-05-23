@@ -2,4 +2,7 @@
 @import '~bootstrap/scss/bootstrap.scss';
 @import './styles/bootswatch';
 
-
+.page-container {
+  padding: 70px 0;
+  min-height: 600px;
+}

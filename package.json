@@ -8,7 +8,8 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.1",
-    "reactstrap": "^8.0.0"
+    "reactstrap": "^8.0.0",
+    "prop-types": "^15.7.2"
   },
   "scripts": {
     "start": "webpack-dev-server --mode development --open  --watch",
@@ -44,7 +45,6 @@
     "eslint-plugin-react": "^7.13.0",
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^3.2.0",
-    "prop-types": "^15.7.2",
     "webpack": "^4.32.2",
     "webpack-cli": "^3.3.2",
     "webpack-dev-server": "^3.4.1"

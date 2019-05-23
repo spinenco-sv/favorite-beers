@@ -13,6 +13,9 @@ module.exports = {
     filename: 'index_bundle.js',
     publicPath: '/'
   },
+  resolve: {
+    extensions: ['.js', '.jsx'],
+  },
   module: {
     rules: [
       {

@@ -1,0 +1,12 @@
+.Product {
+  margin: 10px 0;
+  padding: 5px 15px;
+  background: #eee;
+
+  &--image {
+    height: 200px;
+    width: auto;
+    margin: 10px auto;
+    display: block;
+  }
+}

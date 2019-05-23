@@ -1,6 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import Navigation from './modules/Navigation';
+import FavoriteBeers from './modules/FavoriteBeers';
+
 import './style.scss';
 
 export class Index extends React.Component {
@@ -18,7 +21,13 @@ export class Index extends React.Component {
     } = this.state;
 
     return (
-      <div>{title}</div>
+      <div>
+        <Navigation />
+        <div className="container page-container">
+          {title}
+          <FavoriteBeers />
+        </div>
+      </div>
     );
   }
 }
