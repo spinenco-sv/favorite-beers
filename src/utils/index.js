@@ -1,7 +1,6 @@
 export const stringToDate = (string)=> {
-  const [month, year, day = '01'] = string.split(/[\\\/]/);
-
-  return new Date(year, month, day);
+  const [ month, year] = string.split(/[\\\/]/);
+  return new Date(year, month, 1);
 };
 
 export const filterBeers = (beers, from, to) => {

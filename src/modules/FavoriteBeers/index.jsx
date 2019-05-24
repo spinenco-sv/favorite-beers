@@ -40,7 +40,7 @@ const FavoriteBeers = (props) => {
   // Fetch first time beers
   const [beers, setBeers] = useState([]);
   useEffect(() => {
-    fetch('http://localhost:8080/beers.json')
+    fetch('https://api.punkapi.com/v2/beers')
       .then(response => response.json())
       .then(d => setBeers(d));
   }, []);
@@ -155,32 +155,42 @@ const FavoriteBeers = (props) => {
           </div>
         </Col>
       </Row>
-      <Row className="row-eq-height">
-        {currentBeers.map(beer => (
-          <Col sm="12" md="6">
-            <Beer {...beer} key={`beer-${beer.id}`} />
-          </Col>
-        ))}
-      </Row>
-      <Row className="justify-content-center mt-5">
-        <Col className="d-flex">
-          <Pagination size="lg" className="mx-auto">
-            <PaginationItem disabled={currentPage === 1}>
-              <PaginationLink first onClick={() => setPage(currentPage - 1)} />
-            </PaginationItem>
-            {pageNumbers.map(page => (
-              <PaginationItem active={page === currentPage} key={`page-${page}`}>
-                <PaginationLink onClick={() => setPage(page)}>
-                  {page}
-                </PaginationLink>
+      { currentBeers.length > 0 && (
+        <Row className="row-eq-height">
+          {currentBeers.map(beer => (
+            <Col sm="12" md="6">
+              <Beer {...beer} key={`beer-${beer.id}`} />
+            </Col>
+          ))}
+        </Row>
+      )
+      }
+      { beers.length > 0 && filteredBeers.length === 0 && (
+        <h3 className="text-danger text-center">No beers found based on selected period</h3>
+      )
+      }
+      { pageNumbers.length > 0 && (
+        <Row className="justify-content-center mt-5">
+          <Col className="d-flex">
+            <Pagination size="lg" className="mx-auto">
+              <PaginationItem disabled={currentPage === 1}>
+                <PaginationLink first onClick={() => setPage(currentPage - 1)} />
               </PaginationItem>
-            ))}
-            <PaginationItem disabled={currentPage === pageNumbers.length}>
-              <PaginationLink last onClick={() => setPage(currentPage + 1)} />
-            </PaginationItem>
-          </Pagination>
-        </Col>
-      </Row>
+              {pageNumbers.map(page => (
+                <PaginationItem active={page === currentPage} key={`page-${page}`}>
+                  <PaginationLink onClick={() => setPage(page)}>
+                    {page}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem disabled={currentPage === pageNumbers.length}>
+                <PaginationLink last onClick={() => setPage(currentPage + 1)} />
+              </PaginationItem>
+            </Pagination>
+          </Col>
+        </Row>
+      )
+      }
     </Container>
   );
 };
