@@ -10,7 +10,7 @@ export const Index = () => (
   <div>
     <Navigation />
     <div className="container page-container">
-      <FavoriteBeers />
+      <FavoriteBeers beersPerPage={4} defaultYear={1960} />
     </div>
   </div>
 );

@@ -2,14 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Badge, Col, Row } from 'reactstrap';
 
-import { truncateText } from '../../utils/filters';
-
+import { truncateText } from '../../utils';
 import './style.scss';
 
 const Product = (props) => {
   const {
     description = '',
-    descriptionLimit = 50,
+    descriptionLimit = 40,
     image_url: image = '',
     first_brewed: firstBreved = '',
     name = '',
@@ -42,13 +41,20 @@ const Product = (props) => {
 };
 
 Product.propTypes = {
-  description: PropTypes.string.isRequired,
-  descriptionLimit: PropTypes.number.isRequired,
+  description: PropTypes.string,
+  descriptionLimit: PropTypes.number,
   first_brewed: PropTypes.string.isRequired,
   image_url: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  ph: PropTypes.number.isRequired,
-  tagline: PropTypes.string.isRequired,
+  ph: PropTypes.number,
+  tagline: PropTypes.string,
+};
+
+Product.defaultProps = {
+  description: '',
+  descriptionLimit: 40,
+  ph: 0,
+  tagline: '',
 };
 
 export default Product;

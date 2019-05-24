@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+
 import {
   Col,
   Container,
   Form,
+  Input,
   FormGroup,
   Label,
   PaginationLink,
@@ -10,16 +13,18 @@ import {
   PaginationItem,
   Row,
 } from 'reactstrap';
-import './style.scss';
 
 import Beer from '../Product';
-import { filterBeers } from '../../utils/filters';
-import { generateYears, generateMonths } from '../../utils/date';
+import { generateYears, generateMonths, filterBeers } from '../../utils';
 
 
-const FavoriteBeers = () => {
+const FavoriteBeers = (props) => {
+  const {
+    beersPerPage,
+    defaultYear,
+  } = props;
+
   const [currentPage, setPage] = useState(1);
-  const beersPerPage = 4;
   const indexOfLastBeer = currentPage * beersPerPage;
   const indexOfFirstTodo = indexOfLastBeer - beersPerPage;
 
@@ -27,10 +32,10 @@ const FavoriteBeers = () => {
   const [fromMonth, setFromMonth] = useState(1);
   const [toMonth, setToMonth] = useState(1);
 
-  const defaultYear = 2008;
   const [fromYear, setFromYear] = useState(defaultYear);
-  const [toYear, setToYear] = useState(2018);
+  const [toYear, setToYear] = useState(new Date().getFullYear());
   const years = generateYears(defaultYear);
+  const months = generateMonths();
 
   // Fetch first time beers
   const [beers, setBeers] = useState([]);
@@ -40,6 +45,7 @@ const FavoriteBeers = () => {
       .then(d => setBeers(d));
   }, []);
 
+  // Filter beers based un period
   const [filteredBeers, setFilteredBeers] = useState([]);
   useEffect(
     () => {
@@ -50,6 +56,7 @@ const FavoriteBeers = () => {
           `${toMonth}${'\\'}${toYear}`,
         ),
       );
+      setPage(1);
     },
     [
       beers,
@@ -60,11 +67,9 @@ const FavoriteBeers = () => {
     ],
   );
 
-
+  // Paginate beers
   const currentBeers = filteredBeers.slice(indexOfFirstTodo, indexOfLastBeer);
 
-
-  const months = generateMonths();
 
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(filteredBeers.length / beersPerPage); i += 1) {
@@ -74,29 +79,79 @@ const FavoriteBeers = () => {
   return (
     <Container>
       <Row>
-        <Col sm="12" lg={{ size: 8, offset: 2 }}>
-          <div className="Filter">
-            <Row className="align-items-center">
-              <Col sm="12" md="4">First Brewed</Col>
-              <Col sm="12" md="4">
-                <span className="mr-1 text-uppercase">between</span>
-                <select onChange={e => setFromMonth(e.target.value)}>
-                  {months.map(month => (<option value={month}>{month}</option>))}
-                </select>
-                <select onChange={e => setFromYear(e.target.value)}>
-                  {years.map(year => (<option value={year}>{year}</option>))}
-                </select>
-              </Col>
-              <Col sm="12" md="4">
-                <span className="mr-1 text-uppercase">and</span>
-                <select onChange={e => setToMonth(e.target.value)}>
-                  {months.map(month => (<option value={month}>{month}</option>))}
-                </select>
-                <select onChange={e => setToYear(e.target.value)}>
-                  {years.map(year => (<option value={year}>{year}</option>))}
-                </select>
-              </Col>
-            </Row>
+        <Col sm="12" lg={{ size: 10, offset: 1 }}>
+          <div className="mb-5 p-3 border border-1 border-dark">
+            <Form>
+              <Row className="align-items-center">
+                <Col sm={12} md={2}>
+                  <strong>First Brewed</strong>
+                </Col>
+                <Col sm={12} md={5}>
+                  <Row form className="align-items-center">
+                    <Col sm={12} md={4} className="text-center">
+                      <span className="text-uppercase">between</span>
+                    </Col>
+                    <Col sm={4} md={3}>
+                      <FormGroup>
+                        <Label for="fromMonth" className="text-uppercase">Month</Label>
+                        <Input type="select" onChange={e => setFromMonth(e.target.value)} id="fromMonth">
+                          {months.map(month => (
+                            <option value={month}>
+                              {month < 10 ? '0' : ''}
+                              {month}
+                            </option>
+                          ))}
+                        </Input>
+                      </FormGroup>
+                    </Col>
+                    <Col sm={8} md={5}>
+                      <FormGroup>
+                        <Label for="fromYear" className="text-uppercase">Year</Label>
+                        <Input type="select" onChange={e => setFromYear(e.target.value)} id="fromYear">
+                          {years.map(year => (
+                            <option value={year} selected={year === fromYear}>
+                              {year}
+                            </option>
+                          ))}
+                        </Input>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                </Col>
+                <Col sm={12} md={5}>
+                  <Row form className="align-items-center">
+                    <Col sm={12} md={4} className="text-center">
+                      <span className="text-uppercase">and</span>
+                    </Col>
+                    <Col sm={4} md={3}>
+                      <FormGroup>
+                        <Label for="toMonth" className="text-uppercase">Month</Label>
+                        <Input type="select" onChange={e => setToMonth(e.target.value)} id="toMonth">
+                          {months.map(month => (
+                            <option value={month}>
+                              {month < 10 ? '0' : ''}
+                              {month}
+                            </option>
+                          ))}
+                        </Input>
+                      </FormGroup>
+                    </Col>
+                    <Col sm={8} md={5}>
+                      <FormGroup>
+                        <Label for="toYear" className="text-uppercase">Year</Label>
+                        <Input type="select" onChange={e => setToYear(e.target.value)} id="toYear">
+                          {years.map(year => (
+                            <option value={year} selected={year === toYear}>
+                              {year}
+                            </option>
+                          ))}
+                        </Input>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+            </Form>
           </div>
         </Col>
       </Row>
@@ -128,6 +183,16 @@ const FavoriteBeers = () => {
       </Row>
     </Container>
   );
+};
+
+FavoriteBeers.propTypes = {
+  beersPerPage: PropTypes.number,
+  defaultYear: PropTypes.number,
+};
+
+FavoriteBeers.defaultProps = {
+  beersPerPage: 4,
+  defaultYear: 1950,
 };
 
 export default FavoriteBeers;
