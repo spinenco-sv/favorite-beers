@@ -17,10 +17,10 @@ const Product = (props) => {
   } = props;
 
   return (
-    <div className="Product">
+    <div className={Product.displayName}>
       <Row className="align-items-center">
         <Col sm="12" lg="4">
-          <img src={image} className="Product--image" alt={name} />
+          <img src={image} className={`${Product.displayName}--image`} alt={name} />
         </Col>
         <Col sm="12" lg="8">
           <h3>{name}</h3>
@@ -33,7 +33,7 @@ const Product = (props) => {
             pH:
             <Badge color="primary" className="ml-2">{ph}</Badge>
           </p>
-          <p>{truncateText(description, descriptionLimit)}</p>
+          <p>{truncateText(description, descriptionLimit, '...')}</p>
         </Col>
       </Row>
     </div>
@@ -56,5 +56,7 @@ Product.defaultProps = {
   ph: 0,
   tagline: '',
 };
+
+Product.displayName = 'Product';
 
 export default Product;

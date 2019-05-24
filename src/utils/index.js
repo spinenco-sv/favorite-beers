@@ -17,8 +17,11 @@ export const filterBeers = (beers, from, to) => {
   )
 };
 
-export const truncateText = (str, limit) =>
-  str.split(' ').splice(0, limit).join(' ');
+export const truncateText = (str, limit, delimiter = '...') => {
+  const text = str.split(' ').splice(0, limit).join(' ');
+
+  return text !== str ? `${text}${delimiter}` : text;
+};
 
 export const range = (start, end) => Array.from({ length: (end - start + 1) }, (v, k) => k + start);
 

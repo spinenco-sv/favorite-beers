@@ -8,13 +8,12 @@ import {
   Input,
   FormGroup,
   Label,
-  PaginationLink,
-  Pagination,
-  PaginationItem,
   Row,
 } from 'reactstrap';
 
 import Beer from '../Product';
+import Paginator from '../Paginator';
+
 import { generateYears, generateMonths, filterBeers } from '../../utils';
 
 
@@ -23,11 +22,6 @@ const FavoriteBeers = (props) => {
     beersPerPage,
     defaultYear,
   } = props;
-
-  const [currentPage, setPage] = useState(1);
-  const indexOfLastBeer = currentPage * beersPerPage;
-  const indexOfFirstTodo = indexOfLastBeer - beersPerPage;
-
 
   const [fromMonth, setFromMonth] = useState(1);
   const [toMonth, setToMonth] = useState(1);
@@ -45,7 +39,7 @@ const FavoriteBeers = (props) => {
       .then(d => setBeers(d));
   }, []);
 
-  // Filter beers based un period
+  // Filter beers based on period
   const [filteredBeers, setFilteredBeers] = useState([]);
   useEffect(
     () => {
@@ -56,7 +50,6 @@ const FavoriteBeers = (props) => {
           `${toMonth}${'\\'}${toYear}`,
         ),
       );
-      setPage(1);
     },
     [
       beers,
@@ -67,14 +60,10 @@ const FavoriteBeers = (props) => {
     ],
   );
 
-  // Paginate beers
-  const currentBeers = filteredBeers.slice(indexOfFirstTodo, indexOfLastBeer);
-
-
-  const pageNumbers = [];
-  for (let i = 1; i <= Math.ceil(filteredBeers.length / beersPerPage); i += 1) {
-    pageNumbers.push(i);
-  }
+  const [currentPageBeers, setCurrentPageBeers] = useState([]);
+  const onPageChange = (firstIndex, lastIndex) => setCurrentPageBeers(
+    filteredBeers.slice(firstIndex, lastIndex),
+  );
 
   return (
     <Container>
@@ -96,7 +85,7 @@ const FavoriteBeers = (props) => {
                         <Label for="fromMonth" className="text-uppercase">Month</Label>
                         <Input type="select" onChange={e => setFromMonth(e.target.value)} id="fromMonth">
                           {months.map(month => (
-                            <option value={month}>
+                            <option value={month} key={month}>
                               {month < 10 ? '0' : ''}
                               {month}
                             </option>
@@ -107,9 +96,14 @@ const FavoriteBeers = (props) => {
                     <Col sm={8} md={5}>
                       <FormGroup>
                         <Label for="fromYear" className="text-uppercase">Year</Label>
-                        <Input type="select" onChange={e => setFromYear(e.target.value)} id="fromYear">
+                        <Input
+                          defaultValue={fromYear}
+                          type="select"
+                          onChange={e => setFromYear(e.target.value)}
+                          id="fromYear"
+                        >
                           {years.map(year => (
-                            <option value={year} selected={year === fromYear}>
+                            <option value={year} key={year}>
                               {year}
                             </option>
                           ))}
@@ -128,7 +122,7 @@ const FavoriteBeers = (props) => {
                         <Label for="toMonth" className="text-uppercase">Month</Label>
                         <Input type="select" onChange={e => setToMonth(e.target.value)} id="toMonth">
                           {months.map(month => (
-                            <option value={month}>
+                            <option value={month} key={month}>
                               {month < 10 ? '0' : ''}
                               {month}
                             </option>
@@ -139,9 +133,9 @@ const FavoriteBeers = (props) => {
                     <Col sm={8} md={5}>
                       <FormGroup>
                         <Label for="toYear" className="text-uppercase">Year</Label>
-                        <Input type="select" onChange={e => setToYear(e.target.value)} id="toYear">
+                        <Input type="select" defaultValue={toYear} onChange={e => setToYear(e.target.value)} id="toYear">
                           {years.map(year => (
-                            <option value={year} selected={year === toYear}>
+                            <option value={year} key={year}>
                               {year}
                             </option>
                           ))}
@@ -155,11 +149,11 @@ const FavoriteBeers = (props) => {
           </div>
         </Col>
       </Row>
-      { currentBeers.length > 0 && (
+      { currentPageBeers.length > 0 && (
         <Row className="row-eq-height">
-          {currentBeers.map(beer => (
-            <Col sm="12" md="6">
-              <Beer {...beer} key={`beer-${beer.id}`} />
+          {currentPageBeers.map(beer => (
+            <Col sm="12" md="6" key={`beer-${beer.id}`}>
+              <Beer {...beer} />
             </Col>
           ))}
         </Row>
@@ -169,28 +163,11 @@ const FavoriteBeers = (props) => {
         <h3 className="text-danger text-center">No beers found based on selected period</h3>
       )
       }
-      { pageNumbers.length > 0 && (
-        <Row className="justify-content-center mt-5">
-          <Col className="d-flex">
-            <Pagination size="lg" className="mx-auto">
-              <PaginationItem disabled={currentPage === 1}>
-                <PaginationLink first onClick={() => setPage(currentPage - 1)} />
-              </PaginationItem>
-              {pageNumbers.map(page => (
-                <PaginationItem active={page === currentPage} key={`page-${page}`}>
-                  <PaginationLink onClick={() => setPage(page)}>
-                    {page}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              <PaginationItem disabled={currentPage === pageNumbers.length}>
-                <PaginationLink last onClick={() => setPage(currentPage + 1)} />
-              </PaginationItem>
-            </Pagination>
-          </Col>
-        </Row>
-      )
-      }
+      <Paginator
+        itemsLength={filteredBeers.length}
+        itemsPerPage={beersPerPage}
+        onPageChange={onPageChange}
+      />
     </Container>
   );
 };

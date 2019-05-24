@@ -1,13 +1,13 @@
 .Product {
-  margin: 15px 0;
-  padding: 15px;
   background: #eee;
   height: calc(100% - 30px);
+  margin: 15px 0;
+  padding: 15px;
 
   &--image {
-    height: 200px;
-    width: auto;
-    margin: 10px auto;
     display: block;
+    height: 200px;
+    margin: 10px auto;
+    width: auto;
   }
 }

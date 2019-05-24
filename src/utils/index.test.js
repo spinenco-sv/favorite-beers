@@ -28,7 +28,7 @@ describe('Test utils functions', () => {
   });
 
   it('Should truncate text', () => {
-    expect(truncateText('Test text for truncate', 2)).toEqual('Test text');
+    expect(truncateText('Test text for truncate', 2)).toEqual('Test text...');
     expect(truncateText('Test text for truncate', 10)).toEqual('Test text for truncate');
   });
 
