@@ -40,7 +40,7 @@ const FavoriteBeers = (props) => {
   }, []);
 
   // Filter beers based on period
-  const [filteredBeers, setFilteredBeers] = useState([]);
+  const [filteredBeers, setFilteredBeers] = useState(null);
   useEffect(
     () => {
       setFilteredBeers(
@@ -60,10 +60,10 @@ const FavoriteBeers = (props) => {
     ],
   );
 
-  const [currentPageBeers, setCurrentPageBeers] = useState([]);
-  const onPageChange = (firstIndex, lastIndex) => setCurrentPageBeers(
+  const [currentPageBeers, setCurrentPageBeers] = useState(null);
+  const onPageChange = (firstIndex, lastIndex) => (filteredBeers ? setCurrentPageBeers(
     filteredBeers.slice(firstIndex, lastIndex),
-  );
+  ) : null);
 
   return (
     <Container>
@@ -149,7 +149,7 @@ const FavoriteBeers = (props) => {
           </div>
         </Col>
       </Row>
-      { currentPageBeers.length > 0 && (
+      { currentPageBeers !== null && (
         <Row className="row-eq-height">
           {currentPageBeers.map(beer => (
             <Col sm="12" md="6" key={`beer-${beer.id}`}>
@@ -159,12 +159,12 @@ const FavoriteBeers = (props) => {
         </Row>
       )
       }
-      { beers.length > 0 && filteredBeers.length === 0 && (
+      { beers.length !== 0 && currentPageBeers && currentPageBeers.length === 0 && (
         <h3 className="text-danger text-center">No beers found based on selected period</h3>
       )
       }
       <Paginator
-        itemsLength={filteredBeers.length}
+        itemsLength={filteredBeers ? filteredBeers.length : 0}
         itemsPerPage={beersPerPage}
         onPageChange={onPageChange}
       />

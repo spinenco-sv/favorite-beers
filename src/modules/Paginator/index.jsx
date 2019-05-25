@@ -27,6 +27,10 @@ const Paginator = (props) => {
     itemsLength,
   ]);
 
+  useEffect(() => {
+    setPage(1);
+  }, [itemsLength]);
+
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(itemsLength / itemsPerPage); i += 1) {
     pageNumbers.push(i);
