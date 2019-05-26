@@ -38,6 +38,9 @@
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.6",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.13.1",
+    "enzyme-to-json": "^3.3.5",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.17.2",
@@ -49,5 +52,9 @@
     "webpack": "^4.32.2",
     "webpack-cli": "^3.3.2",
     "webpack-dev-server": "^3.4.1"
+  },
+  "jest": {
+    "setupFiles": ["./src/setupTests.js"],
+    "snapshotSerializers": ["enzyme-to-json/serializer"]
   }
 }
